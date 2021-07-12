@@ -1,23 +1,26 @@
-import logo from './logo.svg';
+import '../node_modules/bootstrap/dist/css/bootstrap.css';
 import './App.css';
+import SignUpPage from './Components/SignUpPage';
+import LogInPage from './Components/LogInPage';
+import HomePage from './Components/HomePage';
+import AttendenceAccountPage from './Components/AttendenceAccountPage';
+import LeaveApplicationPage from './Components/LeaveApplicationPage';
+import { Switch, Redirect, Route} from 'react-router-dom';
+
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+    
+    <Switch>
+    <Route exact path="/HomePage" component={HomePage} />
+    <Route exact path="/SignUpPage" component={SignUpPage} />
+    <Route exact path="/LogInPage" component={LogInPage} />
+    <Route exact path="/AttendenceAccountPage" component={AttendenceAccountPage} />
+    <Route exact path="/LeaveApplicationPage" component={LeaveApplicationPage} />
+    <Redirect to="/HomePage" />
+    </Switch>
     </div>
   );
 }
