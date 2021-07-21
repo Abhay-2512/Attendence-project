@@ -1,9 +1,10 @@
-import React,{useState} from 'react';
-import { Link,useHistory } from 'react-router-dom';
+import React,{useState,useEffect} from 'react';
+import {Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import {ToastContainer,toast} from 'react-toastify';
 
-let URL2 = "http://localhost:3006/CandidateRegInfo";
+let URL2 = "http://localhost:3007/medxpertEmpDetails";
+let URL = "http://localhost:3007/freshcalender";
 
 
 let myReg = {
@@ -30,7 +31,14 @@ let myReg = {
 function SignUpPage() {
     // State To Store the User Info For LogIn Examination
   const [RegData, setRegData] = useState(myReg);
+  const [calender,setCalender]=useState();
   const history=useHistory();
+
+  useEffect(() => {
+    axios.get(URL).then((res)=>{
+      setCalender(res.data)
+    })
+  }, [])
 
     
   // All Input Fields HAndler
@@ -76,7 +84,6 @@ function SignUpPage() {
         isFormValid = false;
       }
     } else {
-      
       //Iterate the State Object Keys
 
       let ObjKeys = Object.keys(Obj);
@@ -84,7 +91,6 @@ function SignUpPage() {
         if (Obj[ele] === "") {
           Errors[ele] = `Please Enter Valid ${ele} ?`
           setRegData({...RegData,Error:Errors});
-
         }
         return null;
       })
@@ -123,7 +129,7 @@ function SignUpPage() {
   const accountOpen = (e) => {
     e.preventDefault();
     if (formValidation()===true) {
-      history.push("/AttendenceAccountPage")
+      // history.push("/AttendenceAccountPage")
       let mydata = {
         id:"",
         Username: RegData.Username,
@@ -132,11 +138,13 @@ function SignUpPage() {
         Password: RegData.Password,
         gender: RegData.gender,
         Position: RegData.Position,
-        Status:RegData.Status
+        Status:RegData.Status,
+        Attendencee:calender
       }
 
       axios.post(URL2, mydata)
         .then((res) => {
+          
           setRegData({...RegData,
             Username: "",
             Email: "",
@@ -148,7 +156,7 @@ function SignUpPage() {
             successMsg: "Account created successfully."
           })
           console.log(res)
-          
+          history.push("/AttendenceAccountPage")
         })
         .catch((err) => {
           toast.error("something went wrong !", {
@@ -169,8 +177,7 @@ function SignUpPage() {
 
 
     return (
-        <> 
-            
+        <> <ToastContainer />
             <div className="w-100 text-capitalize my-5 text-center fs-1 fw-bold">Employee SignUpPage</div>
             {/* <div className="d-flex justify-content-center text-center my-3 ">
                 <Link to="/logInCandidate"><button className="btn btn-success mx-1 mb-3" >Employee Log In</button></Link>
@@ -239,8 +246,11 @@ function SignUpPage() {
                         <input type="submit" value="Submit" className="btn btn-success btn-sm my-3"></input>
                     </div>
                 </form>
+                <div className="w-75 mx-auto text-end">
+                       <Link to="/HomePage"> <input type="button" value="back" className="btn btn-success btn-sm my-3"></input></Link>
+                    </div>
             </div>
-            <ToastContainer />
+            
         </>
     )
 

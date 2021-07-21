@@ -1,57 +1,64 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React,{useState,useEffect} from 'react';
+import { Link,useHistory } from 'react-router-dom';
+import axios from 'axios';
+
 
 function LogInPage(props) {
-    // const captcha = useSelector(state => state.Examination.Capcha)
-    const captcha=10245;
-    const {myHandlerUsercheck,myHandlerAdmin,myHanderCapcha,text,handleFocusInput,handleBlurInput} = props;
+    const [AllData,setAllData]=useState([])
+    
+    const history=useHistory();
+      useEffect(()=>{
+        axios.get("http://localhost:3007/medxpertEmpDetails").then((res)=>{
+            console.log(res.data)
+            setAllData(res.data)
+        })
+      },[])
+   
+    const {myHandlerUsercheck,UserCheck} = props;
     console.log('i am LogInCandidate');
+    
+    
+    const UserVerification=()=>{
+        let counter=1;
+        AllData.map((ele)=>{
+            if((ele.UserID===UserCheck.UserID) && (ele.Password===UserCheck.Password)){
+                history.push("/AttendenceAccountPage")
+                counter=0;
+            }
+            return null;
+        })
+        if(counter){
+            alert("Please Enter Valid Details")
+        }
+        
+    }
 
-
-    // let UserCheck = myState.UserCheck;
-    let UserCheck={
-        UserID: "xxxx",
-        Password: "yyyy",
-        CapchaEntered: "10245",
-        UserCheckError: false
-      }
+    
 
    
     return (
         <div className="w-100 text-capitalize ">
         {(UserCheck.UserCheckError)?<p className="text-center text-white fw-bold p-1 w-50 mx-auto " style={{backgroundColor:'red',borderRadius:'15px'}}> Please Enter Valid Info Or Check Status </p>:null}
-            <h2 className="w-75 mx-auto my-2 text-capitalize text-center">{text}LogIn Page</h2>
-            <form onSubmit={myHandlerAdmin} id="LogInCandidate" className="w-75 mx-auto border border-1 border-black p-3">
+            <h2 className="w-75 mx-auto my-2 text-capitalize text-center">LogIn Page</h2>
+            <form onSubmit={UserVerification} id="LogInCandidate" className="w-75 mx-auto border border-1 border-black p-3">
                 <div>
                     <label className="form-label my-1" htmlFor="loguserId">UserID : </label>
-                    <input type="text" className="form-control my-1" name="UserID" value={UserCheck.UserID} id="loguserId" onFocus={handleFocusInput} onBlur={handleBlurInput} onChange={myHandlerUsercheck} ></input>
+                    <input type="text" className="form-control my-1" name="UserID" value={UserCheck.UserID} id="loguserId" onChange={myHandlerUsercheck} ></input>
                 </div>
                 <div>
                     <label className="form-label my-1" htmlFor="loguserPwd">Password : </label>
-                    <input type="password" value={UserCheck.Password} name="Password" className="form-control my-1" id="loguserPwd" onFocus={handleFocusInput} onBlur={handleBlurInput} onChange={myHandlerUsercheck}></input>
+                    <input type="password" value={UserCheck.Password} name="Password" className="form-control my-1" id="loguserPwd" onChange={myHandlerUsercheck}></input>
                 </div>
-                <div className="d-flex justify-content-center">
-                    <div >
-                    <p className="m-3 p-1 fs-3 text-center fw-bold text-danger border-0" id="generated-captcha" style={{backgroundColor:"aqua",width:"200px",height:"50px"}} >{captcha}</p>
-                        {/* <input type="text" className="m-3 p-1 fs-3 w-50 text-center fw-bold text-danger border-0" value={UserCheck.Capcha} style={{backgroundColor:"aqua"}}  id="generated-captcha" /> */}
-                    </div>
-                    <div className="d-flex flex-column m-3">
-                    <button type="button" className="capcha-try my-1" id="gen" onClick={myHanderCapcha} >Try Another</button>
-                        <input type="text" id="entered-captcha"  name="CapchaEntered" className="my-1 form-control" placeholder="Enter the captcha.." onChange={myHandlerUsercheck} />
-                    </div>
-                    
-                </div>
+                
                 <div className="w-100 text-center">
                     <input type="submit" value="Submit" className="btn btn-success btn-sm my-2"></input>
                 </div>
             </form>
-            {(text==="Candidate")?
+            
             <div className="w-75 mx-auto">
-                <Link to="/register"><button className="btn btn-success float-end my-2" >Register Here</button></Link>
-                <Link to="/verifiedList"><button className="btn btn-success float-start my-2" >Check Status</button></Link>
-            </div>:<div className="w-75 mx-auto">
                 <Link to="/HomePage"><button className="btn btn-success float-end my-2" >Back To home</button></Link>
-            </div>}
+            </div>
+            
 
         </div>
     )
