@@ -32,7 +32,7 @@ function LeaveApplicationPage() {
         for (i = LeaveFrom; i <= LeaveTo; i++) {
             newOne.splice(i - 1, 1, { "date": i, "status": false, "leave": true })
             setMonthlyPresentee(newOne)
-            mergeAttendence = { ...Attendence, "07": newOne }
+            mergeAttendence = { ...Attendence, "08": newOne }
             console.log(mergeAttendence)
 
         }

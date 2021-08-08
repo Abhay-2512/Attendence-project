@@ -7,7 +7,6 @@ import axios from 'axios';
 function AttendenceAccountPage(props) {
     const [startDate, setStartDate] = useState(null);
     const [EmpData,setEmpData]=useState({})
-    const [AllData, setAllData] = useState([]);
     const [Attendence, setAttendence] = useState({})
     const [monthlyPresentee, setMonthlyPresentee] = useState([]);
     let currMonth = new Date().getMonth();
@@ -17,45 +16,48 @@ function AttendenceAccountPage(props) {
 
     useEffect(() => {
         axios.get("http://localhost:3007/medxpertEmpDetails").then(res => {
-            // console.log(res.data)
             const myData=(res.data).filter((ele)=>{
                 if((UserCheck.UserID===ele.UserID)&&(UserCheck.Password===ele.Password)){
+                    return ele;
+                }else{
                     return ele;
                 } 
             })
             let monthly = myData;
-            setAllData(res.data)
+            console.log(monthly)
             console.log(monthly[0].Attendencee)
             setAttendence(monthly[0].Attendencee)
             console.log(monthly[0])
             setEmpData(monthly[0])
             setMonthlyPresentee(monthly[0].Attendencee[viewmonth])
-            // console.log(monthly[0].Attendencee);
         })
         
-    }, [viewmonth])
+    }, [viewmonth,UserCheck.UserID,UserCheck.Password])
     const AddPresentee = (e) => {
         if (e.target.innerHTML === "OK") {
             e.target.innerHTML = "Present"
             e.target.style.backgroundColor = "green";
-
 
         } else {
             e.target.innerHTML = "OK"
             e.target.style.backgroundColor = "blue";
             let currDate = new Date().getDate();
             let newOne = [...monthlyPresentee];
-            // console.log(newOne);
-            if(newOne[currDate].leave===true){
-                alert("You already Taken Leave for Today !")
+            console.log(newOne);
+            let newDate =currDate-1;
+            if(newOne[newDate].leave===true||newOne[newDate].status===true){
+                alert("You already Taken for Today !")
             }else{
                 newOne.splice(currDate - 1, 1, { "date": currDate, "status": true,"leave":false })
             setMonthlyPresentee(newOne)
-            let mergeAttendence = { ...Attendence, viewmonth: newOne }
-            // console.log(mergeAttendence)
+            console.log(Attendence);
+            
+            let mergeAttendence = { ...Attendence, [viewmonth]: newOne }
+            console.log(mergeAttendence)
             //  let num=Number(EmpData.id)
-            axios.put(`http://localhost:3007/medxpertEmpDetails/${2}`, { ...EmpData, "Attendencee": mergeAttendence }).then((res) => {
+            axios.put(`http://localhost:3007/medxpertEmpDetails/${1}`, { ...EmpData, "Attendencee": mergeAttendence }).then((res) => {
                 console.log("data put ok")
+                alert("Done")
             })
             }
             
@@ -91,7 +93,7 @@ function AttendenceAccountPage(props) {
                     {/* <div className="fw-bold fs-4">{new Date().toLocaleDateString()}</div> */}
 
                     <div><span>Select Month:</span>
-                        <select onChange={ViewMonthlyAttencence}>
+                        <select  onChange={ViewMonthlyAttencence}>
                             <option value="">Select Month</option>
                             <option value="01">January</option>
                             <option value="02">Feb</option>
@@ -139,4 +141,4 @@ function AttendenceAccountPage(props) {
     )
 }
 
-export default AttendenceAccountPage
+export default AttendenceAccountPage;

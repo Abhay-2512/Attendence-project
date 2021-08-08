@@ -89,7 +89,7 @@ function SignUpPage() {
       let ObjKeys = Object.keys(Obj);
       ObjKeys.map((ele) => {
         if (Obj[ele] === "") {
-          Errors[ele] = `Please Enter Valid ${ele} ?`
+          Errors[ele] = `Please Enter Valid ${ele} ?`;
           setRegData({...RegData,Error:Errors});
         }
         return null;
@@ -159,15 +159,15 @@ function SignUpPage() {
           history.push("/AttendenceAccountPage")
         })
         .catch((err) => {
-          toast.error("something went wrong !", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            });
+          // toast.error("something went wrong !", {
+          //   position: "top-right",
+          //   autoClose: 5000,
+          //   hideProgressBar: false,
+          //   closeOnClick: true,
+          //   pauseOnHover: true,
+          //   draggable: true,
+          //   progress: undefined,
+          //   });
             
           console.log(err);
         });
@@ -243,7 +243,7 @@ function SignUpPage() {
 
                     </div>
                     <div className="w-100 text-center">
-                        <input type="submit" value="Submit" className="btn btn-success btn-sm my-3"></input>
+                        <input type="submit" value="Submit"  className="btn btn-success btn-sm my-3"></input>
                     </div>
                 </form>
                 <div className="w-75 mx-auto text-end">
